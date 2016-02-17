@@ -14,7 +14,7 @@ class Player13:
 			for k in range(i*3,i*3+3):
 				for l in range(j*3,j*3+3):
 					if(gameBoard[k][l] == '-'):
-						cells.append(gameBoard[k][l])
+						cells.append((k,l))
 
 		if cells == []:
 			block = [0,1,2,3,4,5,6,7,8]
@@ -29,7 +29,7 @@ class Player13:
 				for k in range(i*3,i*3+3):
 					for l in range(j*3,j*3+3):
 						if(gameBoard[k][l] == '-'):
-							cells.append(gameBoard[k][l])
+							cells.append((k,l))
 
 		return cells
 
