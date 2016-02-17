@@ -6,10 +6,31 @@ class Player13:
 		pass
 
 	def getEmptyCells(gameBoard, blocksAllowed, boardStat):
-
-		int i,j,block;
+		cells = []
 		for block in range(blocksAllowed):
-			
+			i=block/3
+			j=block%3
+			m=(j*3)
+			for k in range(i*3,i*3+3):
+				for l in range(3):
+					if(gameBoard[k][m] == '-'):
+						cells.append(gameBoard[k][m])
+					m+=1
+				m+=7
+
+		if cells == []:
+			block = [0,1,2,3,4,5,6,7,8]
+		for block in range(blocksAllowed):
+			i=block/3
+			j=block%3
+			m=(j*3)
+			for k in range(i*3,i*3+3):
+				for l in range(3):
+					if(gameBoard[k][m] == '-'):
+						cells.append(gameBoard[k][m])
+					m+=1
+				m+=7
+		return cells
 
 
 	def move(self, temp_board, temp_block, old_move, flag):
