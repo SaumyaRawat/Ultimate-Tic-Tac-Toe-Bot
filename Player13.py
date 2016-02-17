@@ -6,6 +6,7 @@ class Player13:
 		pass
 
 	def getEmptyCells(self,gameBoard, blocksAllowed, boardStat):
+		Lalala
 		print "jhf"
 			
 
