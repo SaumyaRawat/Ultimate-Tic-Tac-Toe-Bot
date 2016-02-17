@@ -5,6 +5,13 @@ class Player13:
 	def __init__(self):
 		pass
 
+	def getEmptyCells(gameBoard, blocksAllowed, boardStat):
+
+		int i,j,block;
+		for block in range(blocksAllowed):
+			
+
+
 	def move(self, temp_board, temp_block, old_move, flag):
 		#List of permitted blocks, based on old move.
 		blocks_allowed  = determine_blocks_allowed(old_move, temp_block)
