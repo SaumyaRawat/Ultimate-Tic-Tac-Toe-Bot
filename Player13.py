@@ -5,7 +5,6 @@ class Player13:
 	def __init__(self):
 		pass
 
-
 	def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
 		cells = []
 		for block in blocksAllowed:
