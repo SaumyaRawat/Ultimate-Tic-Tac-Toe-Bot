@@ -158,30 +158,43 @@ class Player13:
 		return
 
 
+	#Minimax using alpha-beta pruning
 	def makeMove(self, boardStat, blockStat, move, flag, depth, alpha, beta):
 		copy_board=boardStat
 		copy_block=blockStat
 		self.updateBoardStat(copy_board,copy_block, move, flag)
 
 		if depth==4:
-			val=self.utility(boardStat, blockStat)
-			return val, val, val, move
+			val=self.utility(boardStat, blockStat, move, flag)
+			return val, val
+
+		blocksAllowed=self.getAllowedblocks(move,blockStat)
+		children=self.getEmptyCells(boardStat, blocksAllowed, blockStat)
 
 		#Maximiser
 		if flag==self.flag:
-			blocksAllowed=self.getAllowedblocks(move,blockStat)
-			children=self.getEmptyCells(boardStat, blocksAllowed, blockStat)
 			for child in children:
-				temp_alpha, temp_beta, val, returnedMove=makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
-				#minimiser
-				if alpha<val:
-					alpha=val
-					bestMove=returnedMove
-
-
-
-
-		return 1,2,3,(4,5)
+				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
+				# implementing alpha=max(beta of children)
+				if temp_beta>alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
+					alpha=temp_beta
+					if alpha<beta:
+						bestMove=child
+					else:
+						break
+			return alpha, beta
+		#Minimiser
+		elif flag==self.opponentFlag:
+			for child in children:
+				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth+1, alpha,beta)
+				#Implementing beta=min(all child alphas)
+				if beta>temp_alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
+					beta=temp_alpha
+					if alpha<beta:
+						bestMove=child
+					else:
+						break
+			return alpha, beta
 
 	def move(self, boardStat, blockStat, oldMove, flag):
 		#List of permitted blocks, based on old move.
@@ -205,7 +218,13 @@ class Player13:
 		copy_board=boardStat
 		copy_block=blockStat
 		for cell in cells:
-			alpha, beta, value, bestMove=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, 1, alpha, beta)
+			temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, 1, alpha, beta)
+			if temp_beta>alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
+				alpha=temp_beta
+				if alpha<beta:
+					bestMove=child
+				else:
+					break		#CHECK!!
 			
 	
 		#Choose a move based on some algorithm, here it is a random move.
