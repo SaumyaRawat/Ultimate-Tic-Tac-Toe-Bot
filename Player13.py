@@ -5,7 +5,9 @@ class Player13:
 	def __init__(self):
 		self.flag='X'
 		self.opponentFlag='O'
-
+		self.alpha=-1e10	#-infinity
+		self.beta=1e10		#+infinity
+		self.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 
 	def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
 		cells = []
@@ -104,30 +106,47 @@ class Player13:
 
 	def getOpponentFlag(self, flag):
 		if flag=='x':
-			self.opponentFlag='y'
+			return 'y'
 		elif flag=='X':
-			self.opponentFlag='Y'
+			return 'Y'
 		elif flag=='y':
-			self.opponentFlag='x'
+			return 'x'
 		elif flag=='Y':
-			self.opponentFlag='X'
+			return 'X'
+
+	def utility(self, boardStat, block_stat, oldMove, flag):
+		block_no = (oldMove[0]/3) * 3 + oldMove[1]/3
+
+
+	def makeMove(self, boardStat, blockStat, oldMove, flag, depth, alpha, beta):
+		if depth==4:
+			val=self.utility(boardStat, blockStat)
+			return val, val, val, oldMove
+		return 1,2,3,(4,5)
 
 	def move(self, boardStat, blockStat, oldMove, flag):
 		#List of permitted blocks, based on old move.
 		if oldMove[0]==-1 and oldMove[1]==-1:
 			return (4,4)
 
-		self.flag=flag;
 		#Get Opponent flag
+		self.flag=flag;
 		self.opponentFlag=self.getOpponentFlag(self.flag)
-		print self.flag
 
 		blocksAllowed=self.getAllowedblocks(oldMove, blockStat)
 		
 		#Get list of empty valid cells
 		cells = self.getEmptyCells(boardStat, blocksAllowed, blockStat)
-		print blocksAllowed
-
+		
+		#Make copy of Board and Block to avoid mutation 
+		alpha=self.alpha
+		beta=self.beta
+		copy_board=boardStat
+		copy_block=blockStat
+		for cell in cells:
+			alpha, beta, value, bestMove=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, 1, alpha, beta)
+			
+	
 		return cells[random.randrange(len(cells))]
 
 		#Choose a move based on some algorithm, here it is a random move.
