@@ -125,36 +125,36 @@ class Player13:
 		row=(block_no/3)*3
 		col=(block_no%3)*3
 	
-	def updateBoardStat(self, board_game, board_stat, move, flag):
-    	board_game[move[0]][move[1]] = flag
+	def updateBoardStat(self, boardStat, blockStat, move, flag):
+    	boardStat[move[0]][move[1]] = flag
 		block_no = (move[0]/3) * 3 + move[1]/3
 		row = (block_no/3) * 3
-		column = (block_no%3) * 3
+		col = (block_no%3) * 3
 		is_done = 0
-		if board_stat[block_no] == '-':
-			if board_game[row][column] == board_game[row+1][column+1] and board_game[row+1][column+1] == board_game[row+2][column+2] and board_game[row][column] != '-':
+		if blockStat[block_no] == '-':
+			if boardStat[row][col] == boardStat[row+1][col+1] and boardStat[row+1][col+1] == boardStat[row+2][col+2] and boardStat[row][col] != '-':
 				is_done = 1
-			if board_game[row+2][column] == board_game[row+1][column+1] and board_game[row+1][column+1] == board_game[row][column+2] and board_game[row+1][column+1] != '-':
+			if boardStat[row+2][col] == boardStat[row+1][col+1] and boardStat[row+1][col+1] == boardStat[row][col+2] and boardStat[row+1][col+1] != '-':
 				is_done = 1
 			if not is_done:
-				for i in xrange(column, column + 3):
-					if board_game[row][i] == board_game[row+1][i] and board_game[row+1][i] == board_game[row+2][i] and board_game[row][i] != '-':
+				for i in xrange(col, col + 3):
+					if boardStat[row][i] == boardStat[row+1][i] and boardStat[row+1][i] == boardStat[row+2][i] and boardStat[row][i] != '-':
 						is_done = 1
 						break
 			if not is_done:
 				for i in xrange(row, row + 3):
-					if board_game[i][column] == board_game[i][column+1] and board_game[i][column+1] == board_game[i][column+2] and board_game[i][column] != '-':
+					if boardStat[i][col] == boardStat[i][col+1] and boardStat[i][col+1] == boardStat[i][col+2] and boardStat[i][col] != '-':
 						is_done = 1
 						break
 			if is_done:
-				board_stat[block_no] = flag
+				blockStat[block_no] = flag
 			empty_cells = []
 			for i in xrange(row, row + 3):
-				for j in xrange(column, column + 3):
-					if board_game[i][j] == '-':
+				for j in xrange(col, col + 3):
+					if boardStat[i][j] == '-':
 						empty_cells.append((i, j))
 			if len(empty_cells) == 0 and not is_done:
-				board_stat[block_no] = 'd'
+				blockStat[block_no] = 'd'
 		return
 
 
