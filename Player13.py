@@ -165,7 +165,7 @@ class Player13:
 
 		if depth==4:
 			val=self.utility(boardStat, blockStat)
-			return val, val, val, move
+			return alpha, beta, val, move
 
 		#Maximiser
 		if flag==self.flag:
