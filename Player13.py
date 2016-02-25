@@ -5,7 +5,7 @@ class Player13:
 	def __init__(self):
 		pass
 
-	def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
+	def getEmptyCells(self, gameoard, blocksAllowed, blockStat):
 		cells = []
 		for block in blocksAllowed:
 			i=block/3
@@ -111,8 +111,9 @@ class Player13:
 		#Get list of empty valid cells
 		cells = self.getEmptyCells(boardStat, blocksAllowed, blockStat)
 		print cells
+		
 		#Choose a move based on some algorithm, here it is a random move.
-
+		return cells[random.randrange(len(cells))]
 
 if __name__ == '__main__':
 	obj = Player13()
