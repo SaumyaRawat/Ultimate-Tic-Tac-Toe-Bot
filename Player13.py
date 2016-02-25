@@ -3,7 +3,9 @@ from evaluator_code import *
 
 class Player13:
 	def __init__(self):
-		pass
+		self.flag='X'
+		self.opponentFlag='O'
+
 
 	def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
 		cells = []
@@ -100,17 +102,34 @@ class Player13:
 
 		return permittedBlocks
 
+	def getOpponentFlag(self, flag):
+		if flag=='x':
+			self.opponentFlag='y'
+		elif flag=='X':
+			self.opponentFlag='Y'
+		elif flag=='y':
+			self.opponentFlag='x'
+		elif flag=='Y':
+			self.opponentFlag='X'
 
 	def move(self, boardStat, blockStat, oldMove, flag):
 		#List of permitted blocks, based on old move.
-		#blocks_allowed  = determine_blocks_allowed(old_move, temp_block)
 		if oldMove[0]==-1 and oldMove[1]==-1:
 			return (4,4)
 
+		self.flag=flag;
+		#Get Opponent flag
+		self.opponentFlag=self.getOpponentFlag(self.flag)
+		print self.flag
+
 		blocksAllowed=self.getAllowedblocks(oldMove, blockStat)
+		
 		#Get list of empty valid cells
 		cells = self.getEmptyCells(boardStat, blocksAllowed, blockStat)
-		print cells
+		print blocksAllowed
+
+		return cells[random.randrange(len(cells))]
+
 		#Choose a move based on some algorithm, here it is a random move.
 
 
