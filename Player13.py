@@ -169,7 +169,7 @@ class Player13:
 
 		#Maximiser
 		if flag==self.flag:
-			blocksAllowed=self.getAllowedblocks(move,block_stat)
+			blocksAllowed=self.getAllowedblocks(move,blockStat)
 			children=self.getEmptyCells(boardStat, blocksAllowed, blockStat)
 			for child in children:
 				temp_alpha, temp_beta, val, returnedMove=makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
