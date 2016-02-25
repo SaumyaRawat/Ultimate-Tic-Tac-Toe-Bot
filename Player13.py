@@ -126,7 +126,7 @@ class Player13:
 		col=(block_no%3)*3
 	
 	def updateBoardStat(self, board_game, board_stat, move, flag):
-    	#board_game[move[0]][move[1]] = flag
+    	board_game[move[0]][move[1]] = flag
 		block_no = (move[0]/3) * 3 + move[1]/3
 		row = (block_no/3) * 3
 		column = (block_no%3) * 3
