@@ -223,9 +223,7 @@ class Player13:
 		#Make copy of Board and Block to avoid mutation 
 		alpha=self.alpha
 		beta=self.beta
-		orig_board=boardStat[:]
-		orig_block=blockStat[:]
-		
+
 		bestMove=cells[random.randrange(len(cells))]	#In case bestMove does not get referenced in minimax
 		for cell in cells:
 			copy_board=boardStat[:]		#Copy by Value, not reference
@@ -240,7 +238,6 @@ class Player13:
 					break
 
 		#Choose a move based on some algorithm, here it is a random moveself.
-		#print boardStat
 		return tuple(bestMove)
 
 if __name__ == '__main__':
