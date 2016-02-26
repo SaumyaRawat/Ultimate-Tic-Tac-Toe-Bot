@@ -178,6 +178,7 @@ class Player13:
 				copy_board=board[:]
 				copy_block=block[:]
 				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
+				boardStat[child[0]][child[1]]='-'
 				# implementing alpha=max(beta of children)
 				if temp_beta>alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 					alpha=temp_beta
@@ -192,6 +193,7 @@ class Player13:
 				copy_board=board[:]
 				copy_block=block[:]
 				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth+1, alpha,beta)
+				boardStat[child[0]][child[1]]='-'
 				#Implementing beta=min(all child alphas)
 				if beta>temp_alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 					beta=temp_alpha
@@ -223,11 +225,13 @@ class Player13:
 		beta=self.beta
 		orig_board=boardStat[:]
 		orig_block=blockStat[:]
+		
 		bestMove=cells[random.randrange(len(cells))]	#In case bestMove does not get referenced in minimax
 		for cell in cells:
 			copy_board=boardStat[:]		#Copy by Value, not reference
 			copy_block=blockStat[:]
 			temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, 1, alpha, beta)
+			boardStat[cell[0]][cell[1]]='-'
 			if temp_beta>alpha and temp_alpha<=temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 				alpha=temp_beta
 				if alpha<=beta:
@@ -236,6 +240,7 @@ class Player13:
 					break
 
 		#Choose a move based on some algorithm, here it is a random moveself.
+		#print boardStat
 		return tuple(bestMove)
 
 if __name__ == '__main__':
