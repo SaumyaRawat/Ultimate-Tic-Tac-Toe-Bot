@@ -124,7 +124,8 @@ class Player13:
 		block_no = (oldMove[0]/3) * 3 + oldMove[1]/3
 		row=(block_no/3)*3
 		col=(block_no%3)*3
-	
+		return 2
+
 	def updateBoardStat(self, boardStat, blockStat, move, flag):
 		boardStat[move[0]][move[1]] = flag
 		block_no = (move[0]/3) * 3 + move[1]/3
@@ -160,25 +161,27 @@ class Player13:
 
 	#Minimax using alpha-beta pruning
 	def makeMove(self, boardStat, blockStat, move, flag, depth, alpha, beta):
-		copy_board=boardStat
-		copy_block=blockStat
-		self.updateBoardStat(copy_board,copy_block, move, flag)
-
-		if depth==4:
-			val=self.utility(boardStat, blockStat, move, flag)
+		board=boardStat[:]
+		block=blockStat[:]
+		self.updateBoardStat(board,block, move, flag)
+		if depth==1:
+			#val=self.utility(board, block, move, flag)
+			val=5
 			return val, val
 
-		blocksAllowed=self.getAllowedblocks(move,blockStat)
-		children=self.getEmptyCells(boardStat, blocksAllowed, blockStat)
+		blocksAllowed=self.getAllowedblocks(move,block)
+		children=self.getEmptyCells(board, blocksAllowed, block)
 
 		#Maximiser
 		if flag==self.flag:
 			for child in children:
+				copy_board=board[:]
+				copy_block=block[:]
 				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
 				# implementing alpha=max(beta of children)
 				if temp_beta>alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 					alpha=temp_beta
-					if alpha<beta:
+					if alpha<=beta:
 						bestMove=child
 					else:
 						break
@@ -186,11 +189,13 @@ class Player13:
 		#Minimiser
 		elif flag==self.opponentFlag:
 			for child in children:
+				copy_board=board[:]
+				copy_block=block[:]
 				temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth+1, alpha,beta)
 				#Implementing beta=min(all child alphas)
 				if beta>temp_alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 					beta=temp_alpha
-					if alpha<beta:
+					if alpha<=beta:
 						bestMove=child
 					else:
 						break
@@ -202,6 +207,7 @@ class Player13:
 		#Incase of first move, play in the center most cell
 		if oldMove[0]==-1 and oldMove[1]==-1:
 			return (4,4)
+
 
 		#Get Opponent flag
 		self.flag=flag;
@@ -215,26 +221,26 @@ class Player13:
 		#Make copy of Board and Block to avoid mutation 
 		alpha=self.alpha
 		beta=self.beta
-		copy_board=boardStat
-		copy_block=blockStat
+		orig_board=boardStat[:]
+		orig_block=blockStat[:]
+		bestMove=cells[random.randrange(len(cells))]	#In case bestMove does not get referenced in minimax
 		for cell in cells:
+			copy_board=boardStat[:]		#Copy by Value, not reference
+			copy_block=blockStat[:]
 			temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, 1, alpha, beta)
-			if temp_beta>alpha and temp_alpha<temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
+			if temp_beta>alpha and temp_alpha<=temp_beta:		#temp_alpha<temp_beta ensures it is taking from a valid child
 				alpha=temp_beta
-				if alpha<beta:
-					bestMove=child
+				if alpha<=beta:
+					bestMove=cell
 				else:
-					break		#CHECK!!
-			
-	
-		#Choose a move based on some algorithm, here it is a random move.
-		return cells[random.randrange(len(cells))]
+					break
 
-
+		#Choose a move based on some algorithm, here it is a random moveself.
+		return tuple(bestMove)
 
 if __name__ == '__main__':
 	obj = Player13()
 	game_board, block_stat = get_init_board_and_blockstatus()
 	#print game_board[0][0]
 	#print block_stat[0]
-	obj.move(game_board,block_stat, (2,2), 'x')
+	obj.move(game_board,block_stat, (4,4), 'x')

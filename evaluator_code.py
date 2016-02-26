@@ -16,6 +16,7 @@ In case of any queries, please post on moodle.iiit.ac.in
 import sys
 import random
 import signal
+from Player13 import *
 
 def handler(signum, frame):
     #print 'Signal handler called with signal', signum
@@ -95,7 +96,7 @@ def get_init_board_and_blockstatus():
 	for i in range(9):
 		row = ['-']*9
 		board.append(row)
-	
+
 	block_stat = ['-']*9
 	return board, block_stat
 
@@ -142,21 +143,26 @@ def check_valid_move(game_board, block_stat, current_move, old_move):
 	# first we need to check whether current_move is tuple of not
 	# old_move is guaranteed to be correct
 	if type(current_move) is not tuple:
+		print "Enter 1"
 		return False
 	
 	if len(current_move) != 2:
+		print "Enter 2"
 		return False
 
 	a = current_move[0]
 	b = current_move[1]	
 
 	if type(a) is not int or type(b) is not int:
+		print "Enter 3"
 		return False
 	if a < 0 or a > 8 or b < 0 or b > 8:
+		print "Enter 4"
 		return False
 
 	#Special case at start of game, any move is okay!
 	if old_move[0] == -1 and old_move[1] == -1:
+		print "Enter 5"
 		return True
 
 	#List of permitted blocks, based on old move.
@@ -164,7 +170,10 @@ def check_valid_move(game_board, block_stat, current_move, old_move):
 	# We get all the empty cells in allowed blocks. If they're all full, we get all the empty cells in the entire board.
 	cells = get_empty_out_of(game_board, blocks_allowed, block_stat)
 	#Checks if you made a valid move. 
+
+	#print "IN check_valid_move"+str(blocks_allowed)
 	if current_move in cells:
+		print "Enter 6"
 		return True
 	else:
 		return False
@@ -300,7 +309,6 @@ def simulate(obj1,obj2):
 	print_lists(game_board, block_stat)
 
 	while(1): # Main game loop
-		
 		temp_board_state = game_board[:]
 		temp_block_stat = block_stat[:]
 	
@@ -376,8 +384,8 @@ def simulate(obj1,obj2):
 			old_move = ret_move_pl2
 			print_lists(game_board, block_stat)
 	
-	print WINNER
-	print MESSAGE
+	print "Winner is:"+str(WINNER)
+	print "Message for you:"+str(MESSAGE)
 
 if __name__ == '__main__':
 	## get game playing objects
@@ -393,8 +401,8 @@ if __name__ == '__main__':
 	obj2 = ''
 	option = sys.argv[1]	
 	if option == '1':
-		obj1 = Player1()
-		obj2 = Player2()
+		obj1 = Player13()
+		obj2 = Player13()
 
 	elif option == '2':
 		obj1 = Player1()
