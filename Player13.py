@@ -16,6 +16,7 @@ class Player13:
         self.beta=1e10      #+infinity
         self.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 
+
     def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
         cells = []
         for block in blocksAllowed:
@@ -42,6 +43,7 @@ class Player13:
                             cells.append((k,l))
 
         return cells
+
 
     def getAllowedblocks(self,oldMove, blockStat):
         # To check block status and get permittedBlocks in which we can make our move
@@ -75,7 +77,7 @@ class Player13:
                     permittedBlocks.append(6)
 
             elif oldMove[1]%3==1:
-                if(blockStat[0]=='-'):
+                if(blockStat[4]=='-'):
                     permittedBlocks.append(4)
 
             elif oldMove[1]%3==2:
@@ -111,7 +113,6 @@ class Player13:
 
         return permittedBlocks
 
-    @staticmethod
     def utility(self, boardStat, block_stat, oldMove, flag):
         block_no = (oldMove[0]/3) * 3 + oldMove[1]/3
         row=(block_no/3)*3
@@ -123,9 +124,6 @@ class Player13:
             for c in range(col,col+3):
                 xList.append([r,c])
         print xList
-
-        # Check for wins
-
 
         for i in range(8):
             player = opponent = blank = 0
@@ -142,7 +140,6 @@ class Player13:
 
 
 
-    @staticmethod
     def getOpponentFlag(self, flag):
         if flag=='x':
             return 'y'
@@ -152,6 +149,8 @@ class Player13:
             return 'x'
         elif flag=='Y':
             return 'X'
+
+
 
 
     def updateBoardStat(self, boardStat, blockStat, move, flag):
@@ -183,8 +182,11 @@ class Player13:
                     if boardStat[i][j] == '-':
                         empty_cells.append((i, j))
             if len(empty_cells) == 0 and not is_done:
-                blockStat[block_no] = 'd'
+                blockStat[block_no] = 'D'
         return
+
+
+
 
 
     #Minimax using alpha-beta pruning
@@ -192,16 +194,13 @@ class Player13:
         board=boardStat[:]
         block=blockStat[:]
         self.updateBoardStat(board,block, move, flag)
-        if depth==1:
-            #val=self.utility(board, block, move, flag)
-            val=5
+        if depth==5:
+            util = utility(boardStat, block_stat, oldMove, flag)
+            val=random.randrange(100)
             return val, val
 
-        if depth==4:
-            val=self.utility(boardStat, blockStat)
-            blocksAllowed=self.getAllowedblocks(move,block)
-            children=self.getEmptyCells(board, blocksAllowed, block)
-            return alpha, beta, val, move
+        blocksAllowed=self.getAllowedblocks(move,block)
+        children=self.getEmptyCells(board, blocksAllowed, block)
 
         #Maximiser
         if flag==self.flag:
@@ -235,22 +234,17 @@ class Player13:
             return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
-        #List of permitted blocks, based on old move.
 
-        no=self.utility(self,boardStat,block_stat,oldMove,flag)
-        print no
-        
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
             return (4,4)
 
 
-        #Get ME flag
+        #Get Opponent flag
         self.flag=flag;
-        #self.opponentFlag=self.getOpponentFlag(self.flag)
+        self.opponentFlag=self.getOpponentFlag(self.flag)
 
-
-        '''blocksAllowed=self.getAllowedblocks(oldMove, blockStat)
+        blocksAllowed=self.getAllowedblocks(oldMove, blockStat)
         
         #Get list of empty valid cells
         cells = self.getEmptyCells(boardStat, blocksAllowed, blockStat)
@@ -273,7 +267,8 @@ class Player13:
                     break
 
         #Choose a move based on some algorithm, here it is a random moveself.
-        return tuple(bestMove) '''
+        print "bestMove is "+str(bestMove)
+        return tuple(bestMove)
 
 if __name__ == '__main__':
     obj = Player13()
