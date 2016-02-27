@@ -406,7 +406,7 @@ if __name__ == '__main__':
 	option = sys.argv[1]	
 	if option == '1':
 		obj1 = Player13()
-		obj2 = Player13()
+		obj2 = Player1()
 
 	elif option == '2':
 		obj1 = Player1()
@@ -420,8 +420,10 @@ if __name__ == '__main__':
 
 	num = random.uniform(0,1)
 	if num > 0.5:
+		print "P1 is: COMP"
 		simulate(obj2, obj1)
 	else:
+		print "WE ARE P1 :)"
 		simulate(obj1, obj2)
 		
 	
