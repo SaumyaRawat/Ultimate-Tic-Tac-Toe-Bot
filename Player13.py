@@ -132,10 +132,7 @@ class Player13:
         for r in range(row,row+3):
             for c in range(col,col+3):
                 xList.append([r,c])
-        #print xList
-
         H = 0
-
         #Calculate Heuristics for a board
         winFlag = False
         loseFlag = False
@@ -164,8 +161,7 @@ class Player13:
             
             #print player,blank, opponent
             
-            #Special Conditions for winning and losing because of this move
-            # If there are opponents in the line and hence the line is un-winnable
+            #Special Conditions for winning and losing because of this move. If there are opponents in the line and hence the line is un-winnable
             if player!=0 and opponent!=0:
                 player = 0
 
@@ -179,12 +175,7 @@ class Player13:
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
-        finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
-
-        #If win in a center block on board
-        #if winFlag == true and block_no == 4:
-         #   bonus = 10
-        #return H #returns Heuristic without outer block values
+        #finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
         #Heuristics based on the overall blocks' status in the bigger 3x3 grid
         posList = [] #posList contains all lines in which the block_no occurs
@@ -208,7 +199,7 @@ class Player13:
                 
                 else:
                     weight-=1000
-        #finalHeuristic = weight
+        finalHeuristic = weight
         return finalHeuristic
 
 
@@ -222,8 +213,15 @@ class Player13:
         elif flag=='Y':
             return 'X'
 
+    def isTerminal(self, board_stat):
+        for i in xrange(0, 9):
+            if board_stat[i] == '-':
+                return False
+        return True
+
 
     def updateBoardStat(self, boardStat, blockStat, move, flag):
+
         boardStat[move[0]][move[1]] = flag
         block_no = (move[0]/3) * 3 + move[1]/3
         row = (block_no/3) * 3
@@ -253,22 +251,32 @@ class Player13:
                         empty_cells.append((i, j))
             if len(empty_cells) == 0 and not is_done:
                 blockStat[block_no] = 'D'
-        return
 
+            #While updating movem if block is conquered, we dont need to go further..so, send a flag
+            if (len(empty_cells) == 0 and not is_done) or is_done==1:
+                return 1
 
-
-
+        return 0
 
     #Minimax using alpha-beta pruning
     def makeMove(self, boardStat, blockStat, move, flag, depth, alpha, beta):
         board=boardStat[:]
         block=blockStat[:]
         
-        self.updateBoardStat(board,block, move, flag)
-        
+        check_conqueredBlock=self.updateBoardStat(board,block, move, flag)
+
+        if self.isTerminal(boardStat)==True:
+            util = self.utility(boardStat, blockStat, move, flag)
+            return util, util    #Return alpha=beta=util
+
+        if check_conqueredBlock==1:
+            util = self.utility(boardStat, blockStat, move, flag)
+            return util, util    #Return alpha=beta=util
+
+        #If block is conquered before reaching depth
         if depth==5:
             util = self.utility(boardStat, blockStat, move, flag)
-            return util, util
+            return util, util    #Return alpha=beta=util
 
         blocksAllowed=self.getAllowedblocks(move,block)
         children=self.getEmptyCells(board, blocksAllowed, block)
