@@ -74,7 +74,7 @@ class Player13:
 					permittedBlocks.append(6)
 
 			elif oldMove[1]%3==1:
-				if(blockStat[0]=='-'):
+				if(blockStat[4]=='-'):
 					permittedBlocks.append(4)
 
 			elif oldMove[1]%3==2:
@@ -155,7 +155,7 @@ class Player13:
 					if boardStat[i][j] == '-':
 						empty_cells.append((i, j))
 			if len(empty_cells) == 0 and not is_done:
-				blockStat[block_no] = 'd'
+				blockStat[block_no] = 'D'
 		return
 
 
@@ -164,9 +164,8 @@ class Player13:
 		board=boardStat[:]
 		block=blockStat[:]
 		self.updateBoardStat(board,block, move, flag)
-		if depth==1:
-			#val=self.utility(board, block, move, flag)
-			val=5
+		if depth==5:
+			val=random.randrange(100)
 			return val, val
 
 		blocksAllowed=self.getAllowedblocks(move,block)
@@ -204,7 +203,6 @@ class Player13:
 			return alpha, beta
 
 	def move(self, boardStat, blockStat, oldMove, flag):
-		#List of permitted blocks, based on old move.
 
 		#Incase of first move, play in the center most cell
 		if oldMove[0]==-1 and oldMove[1]==-1:
@@ -238,6 +236,7 @@ class Player13:
 					break
 
 		#Choose a move based on some algorithm, here it is a random moveself.
+		print "bestMove is "+str(bestMove)
 		return tuple(bestMove)
 
 if __name__ == '__main__':

@@ -176,6 +176,7 @@ def check_valid_move(game_board, block_stat, current_move, old_move):
 		print "Enter 6"
 		return True
 	else:
+		print "Enter 7"
 		return False
 
 def update_lists(game_board, block_stat, move_ret, fl):
@@ -193,8 +194,8 @@ def update_lists(game_board, block_stat, move_ret, fl):
 			if game_board[i][j] == '-':
 				flag = 1
 
-	if flag == 0:
-		block_stat[block_no] = 'D'
+	#if flag == 0:
+	#	block_stat[block_no] = 'D'
 
 	if block_stat[block_no] == '-':
 		if game_board[id1*3][id2*3] == game_board[id1*3+1][id2*3+1] and game_board[id1*3+1][id2*3+1] == game_board[id1*3+2][id2*3+2] and game_board[id1*3+1][id2*3+1] != '-' and game_board[id1*3+1][id2*3+1] != 'D':
@@ -212,6 +213,9 @@ def update_lists(game_board, block_stat, move_ret, fl):
                                 mflg = 1
                                 break
 	if mflg == 1:
+		block_stat[block_no] = fl
+
+	if mflg==0 and flag ==0 :
 		block_stat[block_no] = fl
 	
 	return mflg
