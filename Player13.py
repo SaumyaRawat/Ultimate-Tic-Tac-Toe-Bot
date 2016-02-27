@@ -122,8 +122,7 @@ class Player13:
 
         return permittedBlocks
 
-    def calcBlockHeuristic(self, block_no, boardStat):
-                block_no = (move[0]/3) * 3 + move[1]/3
+    def calcBlockHeuristic(self, block_no, boardStat,flag):
         row=(block_no/3)*3
         col=(block_no%3)*3
         #print "At Block No:",  block_no
@@ -180,61 +179,8 @@ class Player13:
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
-        row=(block_no/3)*3
-        col=(block_no%3)*3
-        #print "At Block No:",  block_no
-        gameCellMap = []
+        finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
-        xList = []
-        for r in range(row,row+3):
-            for c in range(col,col+3):
-                xList.append([r,c])
-        #print xList
-
-        H = 0
-
-        #Calculate Heuristics for a board
-        winFlag = False
-        loseFlag = False
-        
-        for i in range(8):
-            player = opponent = blank = bonus = 0
-            
-            #Calculate Heuristic in a line from all possible winning sequences:
-            for j in range(3):
-                rowNo = xList[self.winningCombinations[i][j]][0]
-                colNo = xList[self.winningCombinations[i][j]][1]
-                
-                #if the cell has ME
-                if boardStat[rowNo][colNo] == flag:
-                    player+=1 #No of players in the line
-                    
-                    #If players have won the same number of blocks, the player with more number of center cells will gain 2 points
-                    if rowNo and colNo in (1,4,7):
-                        bonus+=middleCellBonus
-                
-                elif boardStat[rowNo][colNo] == '-':
-                    blank+=1 #No of blanks in the line
-                
-                else:
-                    opponent+=1 #No of opponents in the line
-            
-            #print player,blank, opponent
-            
-            #Special Conditions for winning and losing because of this move
-            # If there are opponents in the line and hence the line is un-winnable
-            if player!=0 and opponent!=0:
-                player = 0
-
-            #Small Board Win Condition
-            if player == 3:
-                bonus = blockWinBonus
-                winFlag = True
-
-            H += player*playerWorth + blank*blankWorth - opponent*opponentWorth + bonus
-
-        blockHeuristic[block_no] = H
-        
         #If win in a center block on board
         #if winFlag == true and block_no == 4:
          #   bonus = 10
@@ -255,14 +201,14 @@ class Player13:
                     weight+=1000
                                     
                 elif blockStat[j] == '-':
-                    weight+=calcBlockHeuristic(j,boardStat)
+                    weight+=self.calcBlockHeuristic(j,boardStat,flag)
 
                 elif blockStat[j] == 'D':
                     weight+=0
                 
                 else:
                     weight-=1000
-        finalHeuristic = weight + H
+        #finalHeuristic = weight
         return finalHeuristic
 
 
