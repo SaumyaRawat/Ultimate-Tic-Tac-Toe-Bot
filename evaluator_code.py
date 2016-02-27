@@ -17,6 +17,7 @@ import sys
 import random
 import signal
 from Player13 import *
+from Player14 import *
 
 def handler(signum, frame):
     #print 'Signal handler called with signal', signum
@@ -406,7 +407,7 @@ if __name__ == '__main__':
 	option = sys.argv[1]	
 	if option == '1':
 		obj1 = Player13()
-		obj2 = Player1()
+		obj2 = Player14()
 
 	elif option == '2':
 		obj1 = Player1()

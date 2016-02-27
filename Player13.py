@@ -8,6 +8,7 @@ cornerList = [0,2,6,8]
 blockWinBonus = 100
 inAPatternBonus = 1
 middleCellBonus = 5
+overallBlockWinBonus = 100
 
 class blockBounds:
     rowBegin = 1
@@ -198,7 +199,7 @@ class Player13:
             #wins = losses = draws = blanks = 0
             for j in i:
                 if blockStat[j] == flag:
-                    weight+=1000
+                    weight+=overallBlockWinBonus
                                     
                 elif blockStat[j] == '-':
                     weight+=self.calcBlockHeuristic(j,boardStat,flag)
@@ -207,7 +208,7 @@ class Player13:
                     weight+=0
                 
                 else:
-                    weight-=1000
+                    weight-=overallBlockWinBonus
         finalHeuristic = weight
         return finalHeuristic
 
