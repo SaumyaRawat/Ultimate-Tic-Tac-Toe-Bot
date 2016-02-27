@@ -139,8 +139,8 @@ class Player13:
         H = 0
 
         #Calculate Heuristics for a board
-        winFlag = false
-        loseFlag = false
+        winFlag = False
+        loseFlag = False
         
         for i in range(8):
             player = opponent = blank = bonus = 0
@@ -174,7 +174,7 @@ class Player13:
             #Small Board Win Condition
             if player == 3:
                 bonus = blockWinBonus
-                winFlag = true
+                winFlag = True
 
             H += player*playerWorth + blank*blankWorth - opponent*opponentWorth + bonus
 
@@ -190,12 +190,13 @@ class Player13:
                 for j in range(3):
                     if  self.myStat[self.winningCombinations[i][j]] == 'W':
                         wins+=1
-                    elif self.myStat[self.winningCombinations[i][j] == 'L':
+                    if self.myStat[self.winningCombinations[i][j]] == 'L':
                         losses+=1
-                    elif self.myStat[self.winningCombinations[i][j] == '-':
+                    if self.myStat[self.winningCombinations[i][j]] == '-':
                         blanks+=1
-                    elif self.myStat[self.winningCombinations[i][j] == 'D':
+                    if self.myStat[self.winningCombinations[i][j]] == 'D':
                             draws+=1
+                    
                     if wins == 2 and blanks == 1:
                         #The third block is good
                         self.blockProb[i]
@@ -211,7 +212,7 @@ class Player13:
         elif flag=='y':
             return 'x'
         elif flag=='Y':
-            return 'X'Board
+            return 'X'
 
 
     def updateBoardStat(self, boardStat, blockStat, move, flag):
