@@ -41,6 +41,7 @@ class Player1:
 		pass
 
 	def move(self,temp_board,temp_block,old_move,flag):
+		print "I'm computer!"
 		#List of permitted blocks, based on old move.
 		blocks_allowed  = determine_blocks_allowed(old_move, temp_block)
 		#Get list of empty valid cells
