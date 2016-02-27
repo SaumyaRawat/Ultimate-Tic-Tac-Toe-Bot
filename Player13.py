@@ -1,6 +1,13 @@
 #python
 from evaluator_code import *
 
+playerWorth = 1
+opponentWorth = 1
+blankWorth = 0
+cornerList = [0,2,6,8]
+blockWinBonus = 1
+inAPatternBonus = 1
+middleCellBonus = 1
 
 class blockBounds:
     rowBegin = 1
@@ -15,6 +22,8 @@ class Player13:
         self.alpha=-1e10    #-infinity
         self.beta=1e10      #+infinity
         self.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
+        self.blockProb = [0.1]*9
+        self.myStat = ['-']*9
 
 
     def getEmptyCells(self, gameBoard, blocksAllowed, blockStat):
@@ -113,10 +122,12 @@ class Player13:
 
         return permittedBlocks
 
-    def utility(self, boardStat, block_stat, oldMove, flag):
-        block_no = (oldMove[0]/3) * 3 + oldMove[1]/3
+    def utility(self, boardStat, blockStat, move, flag):
+        block_no = (move[0]/3) * 3 + move[1]/3
         row=(block_no/3)*3
         col=(block_no%3)*3
+        print "At Block No:",  block_no
+        print_lists(boardStat, blockStat)
         gameCellMap = []
 
         xList = []
@@ -125,18 +136,71 @@ class Player13:
                 xList.append([r,c])
         print xList
 
+        H = 0
+
+        #Calculate Heuristics for a board
+        winFlag = false
+        loseFlag = false
+        
         for i in range(8):
-            player = opponent = blank = 0
+            player = opponent = blank = bonus = 0
+            
+            #Calculate Heuristic in a line from all possible winning sequences:
             for j in range(3):
                 rowNo = xList[self.winningCombinations[i][j]][0]
                 colNo = xList[self.winningCombinations[i][j]][1]
+                
+                #if the cell has ME
                 if boardStat[rowNo][colNo] == flag:
-                    player+=1
+                    player+=1 #No of players in the line
+                    
+                    #If players have won the same number of blocks, the player with more number of center cells will gain 2 points
+                    if rowNo and colNo in (1,4,7):
+                        bonus+=middleCellBonus
+                
                 elif boardStat[rowNo][colNo] == '-':
-                    blank+=1
+                    blank+=1 #No of blanks in the line
+                
                 else:
-                    opponent+=1
+                    opponent+=1 #No of opponents in the line
+            
             print player,blank, opponent
+            
+            #Special Conditions for winning and losing because of this move
+            # If there are opponents in the line and hence the line is un-winnable
+            if player!=0 and opponent!=0:
+                player = 0
+
+            #Small Board Win Condition
+            if player == 3:
+                bonus = blockWinBonus
+                winFlag = true
+
+            H += player*playerWorth + blank*blankWorth - opponent*opponentWorth + bonus
+
+  '''      #If win in a center block on board
+        if winFlag == true and block_no == 4:
+            bonus = 10'''
+
+        #Heuristics based on the overall blocks' status
+        #If the heuristics are being calculated for player:
+        if flag == self.flag:
+
+        for i in range(8):
+            wins = losses = draws = blanks = 0
+                for j in range(3):
+                    if  self.myStat[self.winningCombinations[i][j]] == 'W':
+                        wins+=1
+                    elif self.myStat[self.winningCombinations[i][j] == 'L':
+                        losses+=1
+                    elif self.myStat[self.winningCombinations[i][j] == '-':
+                        blanks+=1
+                    elif self.myStat[self.winningCombinations[i][j] == 'D':
+                        draws+=1
+                if wins == 2 and blanks == 1:
+                    #The third block is good
+                    self.blockProb[i]
+        print "H VALUE:", H
 
 
 
@@ -148,9 +212,7 @@ class Player13:
         elif flag=='y':
             return 'x'
         elif flag=='Y':
-            return 'X'
-
-
+            return 'X'Board
 
 
     def updateBoardStat(self, boardStat, blockStat, move, flag):
@@ -193,9 +255,11 @@ class Player13:
     def makeMove(self, boardStat, blockStat, move, flag, depth, alpha, beta):
         board=boardStat[:]
         block=blockStat[:]
+        
         self.updateBoardStat(board,block, move, flag)
-        if depth==5:
-            util = utility(boardStat, block_stat, oldMove, flag)
+        
+        if depth==1:
+            util = self.utility(boardStat, blockStat, move, flag)
             val=random.randrange(100)
             return val, val
 
@@ -234,6 +298,8 @@ class Player13:
             return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
+
+        print_lists(boardStat, blockStat)
 
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
@@ -275,6 +341,7 @@ if __name__ == '__main__':
     game_board, block_stat = get_init_board_and_blockstatus()
     #print game_board[0][0]
     #print block_stat[0]
-    obj.move(game_board,block_stat, (4,4), 'x')
+    move = obj.move(game_board,block_stat, (4,4), 'x')
+    update_lists(game_board, block_stat, move, obj.flag)
     obj.move(game_board,block_stat, (1,2), 'o')
 
