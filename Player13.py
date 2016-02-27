@@ -179,7 +179,7 @@ class Player13:
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
-        finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
+        #finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
         #If win in a center block on board
         #if winFlag == true and block_no == 4:
@@ -208,7 +208,7 @@ class Player13:
                 
                 else:
                     weight-=1000
-        #finalHeuristic = weight
+        finalHeuristic = weight
         return finalHeuristic
 
 
