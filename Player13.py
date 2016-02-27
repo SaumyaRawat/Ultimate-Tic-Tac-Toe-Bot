@@ -266,7 +266,7 @@ class Player13:
         
         self.updateBoardStat(board,block, move, flag)
         
-        if depth==5:
+        if depth==4:
             util = self.utility(boardStat, blockStat, move, flag)
             return util, util
 
