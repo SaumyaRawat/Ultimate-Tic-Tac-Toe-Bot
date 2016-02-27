@@ -127,7 +127,6 @@ class Player13:
         row=(block_no/3)*3
         col=(block_no%3)*3
         print "At Block No:",  block_no
-        print_lists(boardStat, blockStat)
         gameCellMap = []
 
         xList = []
@@ -299,7 +298,6 @@ class Player13:
 
     def move(self, boardStat, blockStat, oldMove, flag):
 
-        print_lists(boardStat, blockStat)
 
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
