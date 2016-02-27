@@ -216,7 +216,7 @@ def update_lists(game_board, block_stat, move_ret, fl):
 		block_stat[block_no] = fl
 
 	if mflg==0 and flag ==0 :
-		block_stat[block_no] = fl
+		block_stat[block_no] = 'D'
 	
 	return mflg
 
