@@ -178,16 +178,15 @@ class Player13:
 
             H += player*playerWorth + blank*blankWorth - opponent*opponentWorth + bonus
 
-  '''      #If win in a center block on board
-        if winFlag == true and block_no == 4:
-            bonus = 10'''
+        #If win in a center block on board
+        #if winFlag == true and block_no == 4:
+         #   bonus = 10
 
         #Heuristics based on the overall blocks' status
         #If the heuristics are being calculated for player:
         if flag == self.flag:
-
-        for i in range(8):
-            wins = losses = draws = blanks = 0
+            for i in range(8):
+                wins = losses = draws = blanks = 0
                 for j in range(3):
                     if  self.myStat[self.winningCombinations[i][j]] == 'W':
                         wins+=1
@@ -196,11 +195,11 @@ class Player13:
                     elif self.myStat[self.winningCombinations[i][j] == '-':
                         blanks+=1
                     elif self.myStat[self.winningCombinations[i][j] == 'D':
-                        draws+=1
-                if wins == 2 and blanks == 1:
-                    #The third block is good
-                    self.blockProb[i]
-        print "H VALUE:", H
+                            draws+=1
+                    if wins == 2 and blanks == 1:
+                        #The third block is good
+                        self.blockProb[i]
+            print "H VALUE:", H
 
 
 
