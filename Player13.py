@@ -1,12 +1,6 @@
 #python
 from evaluator_code import *
 
-class blockBounds:
-    rowBegin = 1
-    rowEnd=1
-    colBegin=1
-    colEnd=1
-
 class Player13:
     def __init__(self):
         self.flag='X'
