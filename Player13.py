@@ -1,14 +1,6 @@
 #python
 from evaluator_code import *
 
-playerWorth = 10
-opponentWorth = 10
-blankWorth = 0
-blockWinBonus = 100
-inAPatternBonus = 1
-middleCellBonus = 5
-overallBlockWinBonus = 100
-
 class blockBounds:
     rowBegin = 1
     rowEnd=1
@@ -23,6 +15,14 @@ class Player13:
         self.beta=1e10      #+infinity
         self.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
         self.blockHeuristic = [0]*9
+        self.playerWorth = 10
+        self.opponentWorth = 10
+        self.blankWorth = 0
+        self.cornerList = [0,2,6,8]
+        self.blockWinBonus = 100
+        self.overallBlockWinBonus = 1000
+        self.inAPatternBonus = 1
+        self.middleCellBonus = 5
         #self.myStat = ['-']*9
 
 
@@ -151,26 +151,24 @@ class Player13:
                     
                     #If players have won the same number of blocks, the player with more number of center cells will gain 2 points
                     if rowNo and colNo in (1,4,7):
-                        bonus+=middleCellBonus
+                        bonus+=self.middleCellBonus
                 
                 elif boardStat[rowNo][colNo] == '-':
                     blank+=1 #No of blanks in the line
                 
                 else:
                     opponent+=1 #No of opponents in the line
-            
-            #print player,blank, opponent
-            
+        
             #Special Conditions for winning and losing because of this move. If there are opponents in the line and hence the line is un-winnable
             if player!=0 and opponent!=0:
                 player = 0
 
             #Small Board Win Condition
             if player == 3:
-                bonus = blockWinBonus
+                bonus = self.blockWinBonus
                 winFlag = True
 
-            H += player*playerWorth + blank*blankWorth - opponent*opponentWorth + bonus
+            H += player*self.playerWorth + blank*self.blankWorth - opponent*self.opponentWorth + bonus
             return H
 
     def utility(self, boardStat, blockStat, move, flag):
@@ -188,8 +186,10 @@ class Player13:
         for i in posList:
             #wins = losses = draws = blanks = 0
             for j in i:
+            	if j==block_no:
+            		continue
                 if blockStat[j] == flag:
-                    weight+=overallBlockWinBonus
+                    weight+=self.overallBlockWinBonus
                                     
                 elif blockStat[j] == '-':
                     weight+=self.calcBlockHeuristic(j,boardStat,flag)
@@ -198,11 +198,9 @@ class Player13:
                     weight+=0
                 
                 else:
-                    weight-=overallBlockWinBonus
-        finalHeuristic = weight
+                    weight-=self.overallBlockWinBonus
+        finalHeuristic += weight
 
-        if flag!=self.flag:
-            finalHeuristic = -weight
         return finalHeuristic
 
 
@@ -277,7 +275,7 @@ class Player13:
             return util, util    #Return alpha=beta=util
 
         #If block is conquered before reaching depth
-        if depth==5:
+        if depth==4:
             util = self.utility(boardStat, blockStat, move, flag)
             return util, util    #Return alpha=beta=util
 
@@ -316,8 +314,6 @@ class Player13:
             return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
-
-
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
             return (4,4)
@@ -346,17 +342,9 @@ class Player13:
                 alpha=temp_beta
                 if alpha<=beta:
                     bestMove=cell
-
-        #Choose a move based on some algorithm, here it is a random moveself.
-        #print "bestMove is "+str(bestMove)
         return tuple(bestMove)
 
 if __name__ == '__main__':
     obj = Player13()
     game_board, block_stat = get_init_board_and_blockstatus()
-    #print game_board[0][0]
-    #print block_stat[0]
-    #move = obj.move(game_board,block_stat, (-1,-1), 'x')
-    #update_lists(game_board, block_stat, move, obj.flag)
-    #obj.move(game_board,block_stat, (1,2), 'o')
 
