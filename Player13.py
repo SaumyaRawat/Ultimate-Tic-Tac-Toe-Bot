@@ -4,7 +4,6 @@ from evaluator_code import *
 playerWorth = 10
 opponentWorth = 10
 blankWorth = 0
-cornerList = [0,2,6,8]
 blockWinBonus = 100
 inAPatternBonus = 1
 middleCellBonus = 5
@@ -201,6 +200,9 @@ class Player13:
                 else:
                     weight-=overallBlockWinBonus
         finalHeuristic = weight
+
+        if flag!=self.flag:
+            finalHeuristic = -weight
         return finalHeuristic
 
 
@@ -214,9 +216,9 @@ class Player13:
         elif flag=='Y':
             return 'X'
 
-    def isTerminal(self, board_stat):
+    def isTerminal(self, blockStat):
         for i in xrange(0, 9):
-            if board_stat[i] == '-':
+            if blockStat[i] == '-':
                 return False
         return True
 
@@ -266,7 +268,7 @@ class Player13:
         
         check_conqueredBlock=self.updateBoardStat(board,block, move, flag)
 
-        if self.isTerminal(boardStat)==True:
+        if self.isTerminal(blockStat)==True:
             util = self.utility(boardStat, blockStat, move, flag)
             return util, util    #Return alpha=beta=util
 
