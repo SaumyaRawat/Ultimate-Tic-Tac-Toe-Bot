@@ -13,7 +13,7 @@ class Player13:
         self.opponentWorth = 10
         self.blankWorth = 0
         self.cornerList = [0,2,6,8]
-        self.blockWinBonus = 100
+        self.blockWinBonus = 1e10
         self.overallBlockWinBonus = 1000
         self.inAPatternBonus = 1
         self.middleCellBonus = 5
@@ -148,7 +148,7 @@ class Player13:
                         bonus+=self.middleCellBonus
                 
                 elif boardStat[rowNo][colNo] == '-':
-                    blank+=1 #No of blanks in the line
+                    blank+=1 #No of blanks in the linefinal
                 
                 else:
                     opponent+=1 #No of opponents in the line
@@ -161,12 +161,16 @@ class Player13:
             if player == 3:
                 bonus = self.blockWinBonus
                 winFlag = True
+                
+            if opponent == 3:
+                bonus = -self.blockWinBonus
 
             H += player*self.playerWorth + blank*self.blankWorth - opponent*self.opponentWorth + bonus
             return H
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
+        finalHeuristic = 0
         #finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
         #Heuristics based on the overall blocks' status in the bigger 3x3 grid

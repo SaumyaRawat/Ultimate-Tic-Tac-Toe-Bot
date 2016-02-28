@@ -416,6 +416,9 @@ if __name__ == '__main__':
 	elif option == '3':
 		obj1 = ManualPlayer()
 		obj2 = ManualPlayer()
+	elif option == '4':
+		obj1 = Player13()
+		obj2 = Player1()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
