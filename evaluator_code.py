@@ -18,6 +18,9 @@ import random
 import signal
 from Player13 import *
 from Player14 import *
+import ai
+import team56
+import team79
 
 def handler(signum, frame):
     #print 'Signal handler called with signal', signum
@@ -408,17 +411,23 @@ if __name__ == '__main__':
 	option = sys.argv[1]	
 	if option == '1':
 		obj1 = Player13()
-		obj2 = Player14()
+		obj2 = Player1()
 
 	elif option == '2':
-		obj1 = Player1()
-		obj2 = ManualPlayer()
-	elif option == '3':
-		obj1 = ManualPlayer()
-		obj2 = ManualPlayer()
+		obj1 = Player13()
+		obj2 = ai()
 	elif option == '4':
 		obj1 = Player13()
-		obj2 = Player1()
+		obj2 = team56()
+	elif option == '3':
+		obj1 = Player13()
+		obj2 = Player14()
+	elif option == '5':
+		obj1 = Player13()
+		obj2 = team79()
+	elif option == '6':
+		obj = Player13()
+		obj2 = Player13()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
