@@ -16,8 +16,8 @@ In case of any queries, please post on moodle.iiit.ac.in
 import sys
 import random
 import signal
-from Player13 import *
-from Player14 import *
+from team13 import *
+from team14 import *
 import ai
 import team56
 import team79
@@ -295,7 +295,7 @@ def print_lists(gb, bs):
 	print
 	
 
-def simulate(obj1,obj2):
+def simulate(obj1,obj2,identity):
 	
 	# Game board is a 9x9 list of lists & block_stat is a list of 9 elements indicating if a block has been won.
 	game_board, block_stat = get_init_board_and_blockstatus()
@@ -343,7 +343,7 @@ def simulate(obj1,obj2):
 			WINNER, MESSAGE = decide_winner_and_get_message('P1', 'L',   'MADE AN INVALID MOVE')
 			break
 			
-
+		print identity
 		print "Player 1 made the move:", ret_move_pl1, 'with', pl1_fl
 		# Update the 'game_board' and 'block_stat' move
 		p1_pts += update_lists(game_board, block_stat, ret_move_pl1, pl1_fl)
@@ -399,12 +399,19 @@ def simulate(obj1,obj2):
 if __name__ == '__main__':
 	## get game playing objects
 
-	if len(sys.argv) != 2:
+	if len(sys.argv) != 2 or len(sys.argv) == 2:
 		print 'Usage: python simulator.py <option>'
-		print '<option> can be 1 => Random player vs. Random player'
-		print '                2 => Human vs. Random Player'
-		print '                3 => Human vs. Human'
-		sys.exit(1)
+		#print '<option> can be 1 => Random player vs. Random player'
+		#print '                2 => Human vs. Random Player'
+		#print '                3 => Human vs. Human'
+		print '<option> can be 1 => Random player vs. Player 13'
+		print '                2 => AI vs. Player 13'
+		print '                3 => Player14(Sahay) vs. Player 13'
+		print '                4 => team56 vs. Player 13'
+		print '                5 => team79 vs. Player 13'
+		print '                6 => Player13 vs. Player 13'
+
+		#sys.exit(1)
  
 	obj1 = ''
 	obj2 = ''
@@ -412,19 +419,18 @@ if __name__ == '__main__':
 	if option == '1':
 		obj1 = Player13()
 		obj2 = Player1()
-
 	elif option == '2':
 		obj1 = Player13()
 		obj2 = ai()
-	elif option == '4':
-		obj1 = Player13()
-		obj2 = team56()
 	elif option == '3':
 		obj1 = Player13()
 		obj2 = Player14()
+	elif option == '4':
+		obj1 = Player13()
+		obj2 = team56.Player56()
 	elif option == '5':
 		obj1 = Player13()
-		obj2 = team79()
+		obj2 = team79.Player79()
 	elif option == '6':
 		obj = Player13()
 		obj2 = Player13()
@@ -434,10 +440,10 @@ if __name__ == '__main__':
 
 	num = random.uniform(0,1)
 	if num > 0.5:
-		print "P1 is: COMP"
-		simulate(obj2, obj1)
+		print "P1 is: NOT US"
+		simulate(obj2, obj1,"Not us")
 	else:
 		print "WE ARE P1 :)"
-		simulate(obj1, obj2)
+		simulate(obj1, obj2,"us")
 		
 	
