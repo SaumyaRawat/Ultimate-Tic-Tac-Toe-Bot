@@ -9,14 +9,16 @@ class Player13:
         self.beta=1e10      #+infinity
         self.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
         self.blockHeuristic = [0]*9
-        self.playerWorth = 10
-        self.opponentWorth = 10
-        self.blankWorth = 0
-        self.cornerList = [0,2,6,8]
+        #self.playerWorth = 10
+        #self.opponentWorth = 10
+        #self.blankWorth = 0
+        #self.cornerList = [0,2,6,8]
         self.blockWinBonus = 1e10
-        self.overallBlockWinBonus = 1000
-        self.inAPatternBonus = 1
+        self.overallBlockWinBonus = 10
+        #Advantage of outside heuristic
+        self.outerBlockWeight = 100
         self.middleCellBonus = 5
+        self.heuristicMatrix = [[0,10,100,1000],[-10,0,0,0],[-100,0,0,0],[-1000,0,0,0]]
         #self.myStat = ['-']*9
 
 
@@ -154,8 +156,8 @@ class Player13:
                     opponent+=1 #No of opponents in the line
         
             #Special Conditions for winning and losing because of this move. If there are opponents in the line and hence the line is un-winnable
-            if player!=0 and opponent!=0:
-                player = 0
+            #if player!=0 and opponent!=0:
+                #player = 0
 
             #Small Board Win Condition
             if player == 3:
@@ -165,13 +167,13 @@ class Player13:
             if opponent == 3:
                 bonus = -self.blockWinBonus
 
-            H += player*self.playerWorth + blank*self.blankWorth - opponent*self.opponentWorth + bonus
+            H += self.heuristicMatrix[player][opponent] + bonus
             return H
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
         finalHeuristic = 0
-        #finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
+        finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
         #Heuristics based on the overall blocks' status in the bigger 3x3 grid
         posList = [] #posList contains all lines in which the block_no occurs
@@ -182,23 +184,23 @@ class Player13:
         
         weight = 0
         for i in posList:
-            #wins = losses = draws = blanks = 0
+            wins = losses = draws = blanks = 0
             for j in i:
-            	if j==block_no:
-            		continue
                 if blockStat[j] == flag:
-                    weight+=self.overallBlockWinBonus
+                    wins+=1
                                     
-                elif blockStat[j] == '-':
-                    weight+=self.calcBlockHeuristic(j,boardStat,flag)
+                #elif blockStat[j] == '-':
+                    #weight+=self.calcBlockHeuristic(j,boardStat,flag)
 
-                elif blockStat[j] == 'D':
-                    weight+=0
+                #elif blockStat[j] == 'D':
+                    #draws+=0
                 
                 else:
-                    weight-=self.overallBlockWinBonus
-        finalHeuristic += weight
+                    losses-=1
 
+            weight += self.heuristicMatrix[wins][losses]
+            weight = weight*self.outerBlockWeight
+            finalHeuristic += weight
         return finalHeuristic
 
 
