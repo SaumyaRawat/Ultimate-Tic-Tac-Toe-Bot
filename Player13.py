@@ -202,6 +202,32 @@ class Player13:
             finalHeuristic += weight
         return finalHeuristic
 
+    def terminalUtility(self, boardStat):
+        bonus = 0
+        #Calculate Heuristics for a board
+        for i in self.winningCombinations:
+            player = opponent = 0
+            
+            #Calculate Heuristic in a line from all possible winning sequences:
+            for j in i:
+                #if the cell has ME
+                if boardStat[j] == self.flag:
+                    player+=1 #No of players in the line
+                                    
+                elif boardStat[j] == self.opponentFlag(self.flag):
+                    opponent+=1 #No of opponents in the line
+        
+            #Board Win Condition
+            if player == 3:
+                bonus = 1e10
+                return bonus
+            #Board Lose Condition    
+            if opponent == 3:
+                bonus = -1e10
+                return bonus
+        return bonus
+
+
 
     def getOpponentFlag(self, flag):
         if flag=='x':
@@ -266,7 +292,7 @@ class Player13:
         check_conqueredBlock=self.updateBoardStat(board,block, move, flag)
 
         if self.isTerminal(blockStat)==True:
-            util = self.utility(boardStat, blockStat, move, flag)
+            util = self.terminalUtility(boardStat)
             return util, util    #Return alpha=beta=util
 
         #if check_conqueredBlock==1:
@@ -324,9 +350,9 @@ class Player13:
 
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
-            #return (4,4)
+            return (4,4)
             #return (1,2)
-            return cells[random.randrange(len(cells))]
+            #return cells[random.randrange(len(cells))]
         
         #Make copy of Board and Block to avoid mutation 
         alpha=self.alpha
