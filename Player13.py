@@ -132,7 +132,6 @@ class Player13:
         #Calculate Heuristics for a board
         winFlag = False
         loseFlag = False
-        
         for i in range(8):
             player = opponent = blank = bonus = 0
             
@@ -146,8 +145,8 @@ class Player13:
                     player+=1 #No of players in the line
                     
                     #If players have won the same number of blocks, the player with more number of center cells will gain 2 points
-                    if rowNo and colNo in (1,4,7):
-                        bonus+=self.middleCellBonus
+                    #if rowNo and colNo in (1,4,7):
+                        #bonus+=self.middleCellBonus
                 
                 elif boardStat[rowNo][colNo] == '-':
                     blank+=1 #No of blanks in the linefinal
@@ -168,7 +167,8 @@ class Player13:
                 bonus = -self.blockWinBonus
 
             H += self.heuristicMatrix[player][opponent] + bonus
-            return H
+            #H += bonus
+        return H
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
