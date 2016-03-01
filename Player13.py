@@ -316,9 +316,9 @@ class Player13:
 
         #Incase of first move, play in the center most cell
         if oldMove[0]==-1 and oldMove[1]==-1:
-            #return (4,4)
+            return (4,4)
             #return (1,2)
-            return cells[random.randrange(len(cells))]
+            #return cells[random.randrange(len(cells))]
         
         #Make copy of Board and Block to avoid mutation 
         alpha=self.alpha
@@ -328,7 +328,7 @@ class Player13:
         self.nodeCount=0;
         val = -1e10
         depth = 0
-        while val != 1e15 and self.nodeCount<=100000:
+        while val != 1e15 and self.nodeCount<=10000:
         	for cell in cells:
         		copy_board=boardStat[:]     #Copy by Value, not reference
             	copy_block=blockStat[:]
