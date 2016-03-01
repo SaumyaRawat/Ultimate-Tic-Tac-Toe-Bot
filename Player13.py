@@ -189,11 +189,11 @@ class Player13:
                 if blockStat[j] == flag:
                     wins+=1
                                     
-                #elif blockStat[j] == '-':
-                    #weight+=self.calcBlockHeuristic(j,boardStat,flag)
+                elif blockStat[j] == '-':
+                    blanks+=1
 
-                #elif blockStat[j] == 'D':
-                    #draws+=0
+                elif blockStat[j] == 'D':
+                    draws+=1
                 
                 else:
                     losses-=1
