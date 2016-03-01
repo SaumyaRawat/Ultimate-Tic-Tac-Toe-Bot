@@ -13,12 +13,12 @@ class Player13:
         #self.opponentWorth = 10
         #self.blankWorth = 0
         #self.cornerList = [0,2,6,8]
-        self.blockWinBonus = 1e10
-        self.overallBlockWinBonus = 10
+        self.blockWinBonus = 100
+        #self.overallBlockWinBonus = 10
         #Advantage of outside heuristic
         self.outerBlockWeight = 100
         self.middleCellBonus = 5
-        self.heuristicMatrix = [[0,10,100,1000],[-10,0,0,0],[-100,0,0,0],[-1000,0,0,0]]
+        self.heuristicMatrix = [[0,-10,-100,-1000],[10,0,0,0],[100,0,0,0],[1000,0,0,0]]
         #self.myStat = ['-']*9
 
 
@@ -145,8 +145,8 @@ class Player13:
                     player+=1 #No of players in the line
                     
                     #If players have won the same number of blocks, the player with more number of center cells will gain 2 points
-                    #if rowNo and colNo in (1,4,7):
-                        #bonus+=self.middleCellBonus
+                    if rowNo and colNo in (1,4,7):
+                        bonus+=self.middleCellBonus
                 
                 elif boardStat[rowNo][colNo] == '-':
                     blank+=1 #No of blanks in the linefinal
@@ -167,7 +167,6 @@ class Player13:
                 bonus = -self.blockWinBonus
 
             H += self.heuristicMatrix[player][opponent] + bonus
-            #H += bonus
         return H
 
     def utility(self, boardStat, blockStat, move, flag):
@@ -270,9 +269,9 @@ class Player13:
             util = self.utility(boardStat, blockStat, move, flag)
             return util, util    #Return alpha=beta=util
 
-        if check_conqueredBlock==1:
-            util = self.utility(boardStat, blockStat, move, flag)
-            return util, util    #Return alpha=beta=util
+        #if check_conqueredBlock==1:
+            #util = self.utility(boardStat, blockStat, move, flag)
+            #return util, util    #Return alpha=beta=util
 
         #If block is conquered before reaching depth
         if depth==4:
@@ -314,11 +313,6 @@ class Player13:
             return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
-        #Incase of first move, play in the center most cell
-        if oldMove[0]==-1 and oldMove[1]==-1:
-            return (4,4)
-
-
         #Get Opponent flag
         self.flag=flag;
         self.opponentFlag=self.getOpponentFlag(self.flag)
@@ -327,6 +321,12 @@ class Player13:
         
         #Get list of empty valid cells
         cells = self.getEmptyCells(boardStat, blocksAllowed, blockStat)
+
+        #Incase of first move, play in the center most cell
+        if oldMove[0]==-1 and oldMove[1]==-1:
+            #return (4,4)
+            #return (1,2)
+            return cells[random.randrange(len(cells))]
         
         #Make copy of Board and Block to avoid mutation 
         alpha=self.alpha
