@@ -166,7 +166,7 @@ class Player13:
                 bonus = -self.blockWinBonus
 
             H += player*self.playerWorth + blank*self.blankWorth - opponent*self.opponentWorth + bonus
-            return H
+    	return H
 
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
