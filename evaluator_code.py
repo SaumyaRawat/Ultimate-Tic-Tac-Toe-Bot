@@ -411,8 +411,8 @@ if __name__ == '__main__':
 		obj2 = Player14()
 
 	elif option == '2':
-		obj1 = Player1()
-		obj2 = ManualPlayer()
+		obj1 = Player14()
+		obj2 = Player14()
 	elif option == '3':
 		obj1 = ManualPlayer()
 		obj2 = ManualPlayer()

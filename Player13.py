@@ -18,7 +18,7 @@ class Player13:
         #Advantage of outside heuristic
         self.outerBlockWeight = 100
         self.middleCellBonus = 5
-        self.heuristicMatrix = [[0,10,100,1000],[-10,0,0,0],[-100,0,0,0],[-1000,0,0,0]]
+        self.heuristicMatrix = [[0,-10,-100,-1000],[10,0,0,0],[100,0,0,0],[1000,0,0,0]]
         #self.myStat = ['-']*9
 
 
@@ -203,6 +203,26 @@ class Player13:
             finalHeuristic += weight
         return finalHeuristic
 
+    def getTerminalVal(self, blockStat):
+    	i=0
+    	count=0
+    	flag=0
+    	for i in self.winningCombinations:
+    		count=0
+    		for j in i:
+    			if blockStat[j]!=self.flag:
+    				continue;
+    			else:
+    				count+=1;
+    		if(count==3):
+    			flag=1
+    			break
+
+    	if(flag==1):
+    		return 1e10
+    	else:
+    		return 0
+
 
     def getOpponentFlag(self, flag):
         if flag=='x':
@@ -271,8 +291,9 @@ class Player13:
             return util, util    #Return alpha=beta=util
 
         if check_conqueredBlock==1:
-            util = self.utility(boardStat, blockStat, move, flag)
-            return util, util    #Return alpha=beta=util
+        	val=self.getTerminalVal(blockStat)
+        	if val!=0:
+        		return val, val
 
         #If block is conquered before reaching depth
         if depth==4:
