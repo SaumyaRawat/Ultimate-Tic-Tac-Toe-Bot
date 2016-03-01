@@ -368,7 +368,6 @@ class Player13:
                 alpha=temp_beta
                 if alpha<=beta:
                     bestMove=cell
-        print "Player13:", flag
         return tuple(bestMove)
 
 if __name__ == '__main__':
