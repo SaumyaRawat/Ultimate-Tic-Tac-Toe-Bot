@@ -401,9 +401,6 @@ if __name__ == '__main__':
 
 	if len(sys.argv) != 2 or len(sys.argv) == 2:
 		print 'Usage: python simulator.py <option>'
-		#print '<option> can be 1 => Random player vs. Random player'
-		#print '                2 => Human vs. Random Player'
-		#print '                3 => Human vs. Human'
 		print '<option> can be 1 => Random player vs. Player 13'
 		print '                2 => AI vs. Player 13'
 		print '                3 => Player14(Sahay) vs. Player 13'
