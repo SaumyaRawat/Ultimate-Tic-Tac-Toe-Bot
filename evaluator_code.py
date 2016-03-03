@@ -401,12 +401,16 @@ if __name__ == '__main__':
 
 	if len(sys.argv) != 2 or len(sys.argv) == 2:
 		print 'Usage: python simulator.py <option>'
+		#print '<option> can be 1 => Random player vs. Random player'
+		#print '                2 => Human vs. Random Player'
+		#print '                3 => Human vs. Human'
 		print '<option> can be 1 => Random player vs. Player 13'
 		print '                2 => AI vs. Player 13'
 		print '                3 => Player14(Sahay) vs. Player 13'
 		print '                4 => team56 vs. Player 13'
 		print '                5 => team79 vs. Player 13'
 		print '                6 => Player13 vs. Player 13'
+		print '                7 => Player14 vs. Player 56'
 
 		#sys.exit(1)
  
@@ -429,8 +433,11 @@ if __name__ == '__main__':
 		obj1 = Player13()
 		obj2 = team79.Player79()
 	elif option == '6':
-		obj = Player13()
+		obj1 = Player13()
 		obj2 = Player13()
+	elif option == '7':
+		obj1 = Player14()
+		obj2 = team79.Player79()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
