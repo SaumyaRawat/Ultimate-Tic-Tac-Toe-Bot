@@ -303,7 +303,6 @@ class Player13:
 
     def move(self, boardStat, blockStat, oldMove, flag):
         #Get Opponent flag
-        print "ensures"
         self.flag=flag;
         self.opponentFlag=self.getOpponentFlag(self.flag)
 
