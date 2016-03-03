@@ -323,6 +323,7 @@ class Player13:
         self.nodeCount=0;
         val = -1e10
         depth = 1
+        bestMove = []
         for cell in cells:
             copy_board=boardStat[:]     #Copy by Value, not reference
             copy_block=blockStat[:]
