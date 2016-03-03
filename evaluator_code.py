@@ -18,6 +18,7 @@ import random
 import signal
 from team13 import *
 from team14 import *
+from team90 import *
 import ai
 import team56
 import team79
@@ -411,6 +412,8 @@ if __name__ == '__main__':
 		print '                5 => team79 vs. Player 13'
 		print '                6 => Player13 vs. Player 13'
 		print '                7 => Player14 vs. Player 56'
+		print '                8 => Player90 vs. Random Player'
+		print '                9 => Player13 vs. Player90'
 
 		#sys.exit(1)
  
@@ -438,6 +441,12 @@ if __name__ == '__main__':
 	elif option == '7':
 		obj1 = Player14()
 		obj2 = team79.Player79()
+	elif option == '8':
+		obj1 = Player90()
+		obj2 = Player1()
+	elif option == '9':
+		obj1 = Player13()
+		obj2 = Player90()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
