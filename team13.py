@@ -283,7 +283,7 @@ class Player13:
                 # implementing alpha=max(beta of children)
                 if temp_beta>alpha:        
                     alpha=temp_beta
-                    if alpha>=beta:
+                    if alpha>beta:
                         break
         #Minimiser
         elif flag==self.opponentFlag:
@@ -297,7 +297,7 @@ class Player13:
                 #Implementing beta=min(all child alphas)
                 if beta>temp_alpha:        #temp_alpha<temp_beta ensures it is taking from a valid child
                     beta=temp_alpha
-                    if alpha>=beta:
+                    if alpha>beta:
                         break
         return alpha, beta
 
