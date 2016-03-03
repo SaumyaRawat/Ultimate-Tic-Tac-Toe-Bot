@@ -323,6 +323,7 @@ class Player13:
         self.nodeCount=0;
         val = -1e10
         depth = 1
+        bestMove = []
         for cell in cells:
             copy_board=boardStat[:]     #Copy by Value, not reference
             copy_block=blockStat[:]
@@ -331,14 +332,17 @@ class Player13:
             if temp_alpha>temp_beta:
                 continue
             if temp_beta>alpha:       #temp_alpha<temp_beta ensures it is taking from a valid child
+                bestMove = []
                 alpha=temp_beta
                 if alpha<=beta:
-                    bestMove=cell
+                    bestMove.append(tuple(cell))
                 else:
                     break
+            elif temp_beta==alpha:
+                bestMove.append(tuple(cell))
 
         print "Player13:", flag
-        return tuple(bestMove)
+        return bestMove[random.randrange(len(bestMove))]
 
 if __name__ == '__main__':
     obj = Player13()
