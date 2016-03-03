@@ -112,7 +112,6 @@ class Player13:
 
         return permittedBlocks
 
-
     def calcBlockHeuristic(self, block_no, boardStat,flag):
         row=(block_no/3)*3
         col=(block_no%3)*3
@@ -156,90 +155,38 @@ class Player13:
             H += self.heuristicMatrix[player][opponent]
         return H
 
-    def calcCellHeuristic(self, block_no, boardStat,flag,move):
-        row=(block_no/3)*3
-        col=(block_no%3)*3
-        x=move[0]-row
-        y=move[1]-col
-        local_blockNo=3*x+y
-        finalHeuristic=0
-        wins = losses = blanks = 0
-
-        for combination in self.winningCombinations:
-        	if wins==3 or losses==3:
-        			break
-        	for j in combination:
-        		heuristic=0
-        		if j == local_blockNo:
-        			
-        			for k in combination:
-        				wins = losses = blanks = 0
-        				if boardStat[row+(k/3)][col+(k%3)] == flag:
-        					wins+=1
-        					if k == 4:	#Middle cell bonus
-        						heuristic += 20
-        				elif boardStat[row+(k/3)][col+(k%3)] == '-':
-        					blanks+=1
-        				else:
-        					losses+=1
-        			
-
-
-
-        			if wins==3:
-        				heuristic+=1000
-        				break
-        			elif losses==3:
-        				heuristic-=1000
-        				break
-        			if (wins!=0 and losses!=0):
-        				break
-        			heuristic += 10**wins + 10**blanks -10**losses
-        			break
-        	finalHeuristic +=heuristic
-        return finalHeuristic
-
     def utility(self, boardStat, blockStat, move, flag):
         block_no = (move[0]/3) * 3 + move[1]/3
         finalHeuristic = 0
-        finalHeuristic = self.calcCellHeuristic(block_no,boardStat,flag, move)
+        finalHeuristic = self.calcBlockHeuristic(block_no,boardStat,flag)
 
-        #Heuristics based on the overall blocks' status in the bigger 3x3 gri
-        wins = losses = blanks = 0
-        heuristic=0
-        for combination in self.winningCombinations:
-        	if wins==3 or losses==3:
-        			break
-        	for j in combination:
-        		heuristic=0
-        		if j == block_no:
-        			
-        			for k in combination:
-        				wins = losses = blanks = 0
-        				if blockStat[k] == flag:
-        					wins+=1
-        				elif blockStat[k] == '-':
-        					blanks+=self.calcBlockHeuristic(k, boardStat,flag)
-        				else:
-        					losses+=1
-        			
+        #Heuristics based on the overall blocks' status in the bigger 3x3 grid
+        posList = [] #posList contains all lines in which the block_no occurs
+        for item in self.winningCombinations:
+            if block_no in item:
+                posList.append(item)
+        
+        
+        weight = 0
+        for i in posList:
+            wins = losses = draws = blanks = 0
+            for j in i:
+                if blockStat[j] == flag:
+                    wins+=1
+                                    
+                elif blockStat[j] == '-':
+                    blanks+=1
 
-        			if wins==3:
-        				heuristic+=1e10
-        				break
-        			elif losses==3:
-        				heuristic-=1e10
-        				break
-        			if (wins!=0 and losses!=0):
-        				break
-        			heuristic += 10*wins + blanks -10*losses
-        			break
+                elif blockStat[j] == 'D':
+                    draws+=1
+                
+                else:
+                    losses+=1
 
-        opponent_blocksAllowed=self.getAllowedblocks(move, blockStat)
-        for i in opponent_blocksAllowed:
-        	heuristic-=self.calcBlockHeuristic(i, boardStat,self.getOpponentFlag(flag))
-
-        return finalHeuristic+heuristic
+            weight += self.heuristicMatrix[wins][losses]
+            weight = weight*self.outerBlockWeight
+            finalHeuristic += weight
+        return finalHeuristic
 
     def terminalUtility(self, boardStat):
         bonus = 0
@@ -335,7 +282,7 @@ class Player13:
             return util, util    #Return alpha=beta=util
 
         #If block is conquered before reaching depth
-        if depth==2:
+        if depth==4:
             util = self.utility(boardStat, blockStat, move, flag)
             return util,util  #Return alpha=beta=util
 
@@ -347,34 +294,33 @@ class Player13:
             for child in children:
                 copy_board=board[:]
                 copy_block=block[:]
-                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
+                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth-1, alpha,beta)
                 boardStat[child[0]][child[1]]='-'
                 if temp_alpha>temp_beta:	#temp_alpha<temp_beta ensures it is taking from a valid child
                 	continue;
                 # implementing alpha=max(beta of children)
                 if temp_beta>alpha:        
                     alpha=temp_beta
-                    if alpha>beta:
+                    if alpha>=beta:
                         break
         #Minimiser
         elif flag==self.opponentFlag:
             for child in children:
                 copy_board=board[:]
                 copy_block=block[:]
-                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth+1, alpha,beta)
+                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth-1, alpha,beta)
                 boardStat[child[0]][child[1]]='-'
                 if temp_alpha>temp_beta:
                 	continue
                 #Implementing beta=min(all child alphas)
                 if beta>temp_alpha:        #temp_alpha<temp_beta ensures it is taking from a valid child
                     beta=temp_alpha
-                    if alpha>beta:
+                    if alpha>=beta:
                         break
         return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
         #Get Opponent flag
-        print "ensures"
         self.flag=flag;
         self.opponentFlag=self.getOpponentFlag(self.flag)
 
@@ -394,20 +340,16 @@ class Player13:
         bestMove=cells[random.randrange(len(cells))]    #In case bestMove does not get referenced in minimax
         self.nodeCount=0;
         val = -1e10
-        depth = 1
+        depth = 0
        	for cell in cells:
        		copy_board=boardStat[:]     #Copy by Value, not reference
            	copy_block=blockStat[:]
            	temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, cell, self.opponentFlag, depth, alpha, beta)
            	boardStat[cell[0]][cell[1]]='-'
-           	if temp_alpha>temp_beta:
-           		continue
-           	if temp_beta>alpha:       #temp_alpha<temp_beta ensures it is taking from a valid child
+           	if temp_beta>alpha and temp_alpha<=temp_beta:       #temp_alpha<temp_beta ensures it is taking from a valid child
            	    alpha=temp_beta
            	    if alpha<=beta:
            	        bestMove=cell
-           	    else:
-           	    	break
 
         print "Player13:", flag
         return tuple(bestMove)
