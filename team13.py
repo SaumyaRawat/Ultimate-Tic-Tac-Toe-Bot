@@ -219,6 +219,7 @@ class Player13:
         row = (block_no/3) * 3
         col = (block_no%3) * 3
         is_done = 0
+        prevBlock='-'
         if blockStat[block_no] == '-':
             if boardStat[row][col] == boardStat[row+1][col+1] and boardStat[row+1][col+1] == boardStat[row+2][col+2] and boardStat[row][col] != '-':
                 is_done = 1
@@ -235,6 +236,7 @@ class Player13:
                         is_done = 1
                         break
             if is_done:
+            	prevBlock=blockStat[block_no]
                 blockStat[block_no] = flag
             empty_cells = []
             for i in xrange(row, row + 3):
@@ -242,69 +244,54 @@ class Player13:
                     if boardStat[i][j] == '-':
                         empty_cells.append((i, j))
             if len(empty_cells) == 0 and not is_done:
+            	prevBlock=blockStat[block_no]
                 blockStat[block_no] = 'D'
 
             #While updating movem if block is conquered, we dont need to go further..so, send a flag
-            if (len(empty_cells) == 0 and not is_done) or is_done==1:
-                return 1
-
-        return 0
+            return prevBlock, block_no
 
     def makeMove(self, boardStat, blockStat, move, flag, depth, alpha, beta):
         board=boardStat[:]
         block=blockStat[:]
-        
-        check_conqueredBlock=self.updateBoardStat(board,block, move, flag)
 
         #if self.isTerminal(blockStat)==True:
             #util = self.terminalUtility(blockStat)
             #return util, util    #Return alpha=beta=util
 
         #If block is conquered before reaching depth
-        if depth==4:
-            util = self.utility(boardStat, blockStat, move, flag)
-            return util,util  #Return alpha=beta=util
+        if depth==8:
+            util = self.utility(board, block, move, flag)
+            return util  #Return alpha=beta=util
 
         blocksAllowed=self.getAllowedblocks(move,block)
         children=self.getEmptyCells(board, blocksAllowed, block)
 
         #Maximiser
         if flag==self.flag:
-            for child in children:
-                copy_board=board[:]
-                copy_block=block[:]
-                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.opponentFlag, depth+1, alpha,beta)
+        	value = -1e10
+        	for child in children:
+        		if alpha>=beta:
+        			break
+                f,b_no=self.updateBoardStat(board,block, child, self.flag)
+                value=max(value,self.makeMove(board, block, child, self.opponentFlag, depth+1, alpha,beta))
+                alpha=max(value, alpha)
+                board[child[0]][child[1]]='-'
+                block[b_no]=f
 
-                boardStat[child[0]][child[1]]='-'
-                if temp_alpha>temp_beta:    #temp_alpha<temp_beta ensures it is taking from a valid child
-                    continue;
-                # implementing alpha=max(beta of children)
-                if temp_beta>alpha:        
-                    alpha=temp_beta
-                    if alpha == 1e10:
-                        print "!!!!"+str(move)+str(child),depth, "self.flag"
-                        exit (0)
-                    if alpha>beta:
-                        break
         #Minimiser
         elif flag==self.opponentFlag:
-            for child in children:
-                copy_board=board[:]
-                copy_block=block[:]
-                temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, child, self.flag, depth+1, alpha,beta)
-                boardStat[child[0]][child[1]]='-'
-                if temp_alpha>temp_beta:
-                    continue
-                if alpha == 1e10:
-                    print "!!!!"+str(move)+str(child),depth,"LALALA"
-                    exit (0)
-                #Implementing beta=min(all child alphas)
-                if beta>temp_alpha:        #temp_alpha<temp_beta ensures it is taking from a valid child
-                    beta=temp_alpha
-                    if alpha>beta:
-                        break
+        	value = 1e10
+        	for child in children:
+        		if alpha>=beta:
+        			break
+                f,b_no=self.updateBoardStat(board,block, child, self.opponentFlag)
+                value=min(value, self.makeMove(board, block, child, self.flag, depth+1, alpha,beta))
+                beta=min(value, beta)
+                board[child[0]][child[1]]='-'
+                block[b_no]=f
+            
+        return value
        # print str(depth)+str(" ")+str(alpha)+str(" ")+str(beta)
-        return alpha, beta
 
     def move(self, boardStat, blockStat, oldMove, flag):
         #Get Opponent flag
@@ -328,31 +315,28 @@ class Player13:
         #In case bestMove does not get referenced in minimax
         depth = 1
         bestMove = []
+        value = -1e10
+        bestVal = -1e15
         for cell in cells:
-            print "###################################################################3"
             copy_board=boardStat[:]     #Copy by Value, not reference
             copy_block=blockStat[:]
-            temp_alpha, temp_beta=self.makeMove(copy_board, copy_block, cell, self.flag, depth, alpha, beta)
-            #print str(temp_alpha)+ str(" ")+str(temp_beta)+str(" ")+str(cell)
+            self.updateBoardStat(copy_board,copy_block, cell, self.flag)
+            value=self.makeMove(copy_board, copy_block, cell, self.flag, depth, alpha, beta)
             boardStat[cell[0]][cell[1]]='-'
-            if temp_alpha>temp_beta:
-                continue
-            if temp_beta>alpha:       #temp_alpha<temp_beta ensures it is taking from a valid child
-                bestMove = []
-                alpha=temp_beta
-                if alpha<=beta:
-                    bestMove.append(tuple(cell))
-                else:
-                    break
-            elif temp_beta==alpha:
-                bestMove.append(tuple(cell))
+            if value>bestVal:
+            	print value
+            	bestMove=[]
+            	bestMove.append(tuple(cell))
+            	bestVal=value
+            elif value == bestVal:
+            	bestMove.append(tuple(cell))
 
         if len(bestMove)==0:
             bestMove.append(cells[random.randrange(len(cells))])
             print "It was 0"
 
         print "Player13:", flag
-        #print "Heur:", alpha
+        print "Heur:", bestVal
         return bestMove[random.randrange(len(bestMove))]
 
 if __name__ == '__main__':
