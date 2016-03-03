@@ -410,6 +410,7 @@ if __name__ == '__main__':
 		print '                4 => team56 vs. Player 13'
 		print '                5 => team79 vs. Player 13'
 		print '                6 => Player13 vs. Player 13'
+		print '                7 => Player14 vs. Player 56'
 
 		#sys.exit(1)
  
@@ -432,8 +433,11 @@ if __name__ == '__main__':
 		obj1 = Player13()
 		obj2 = team79.Player79()
 	elif option == '6':
-		obj = Player13()
+		obj1 = Player13()
 		obj2 = Player13()
+	elif option == '7':
+		obj1 = Player14()
+		obj2 = team79.Player79()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
